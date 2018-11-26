@@ -15,9 +15,9 @@ namespace SignalRChatClient
             window = w;
         }
         //tree object
-        Tree test = new Tree();
+        Tree tree = new Tree();
 
-        public string menuMessage= ("Please choose an option: \n1-Move a node\n2-Add a node\n3-Delete a node\n4-Get a node\n5-Write tree to file\n6-Exit");
+        public string menuMessage= ("Please choose an option: \n1-Add a node\n2-Move a node\n3-Delete a node\n4-Get a node\n5-Write tree to file\n6-Exit");
 
         void StartMenu()
         {
@@ -67,7 +67,7 @@ namespace SignalRChatClient
             {
                 Console.WriteLine(@"Enter file name and extenision for file in c:\workspace\: ");
                 string path = Console.ReadLine();
-                notFound = test.Start(path);
+                notFound = tree.Start(path);
                 if (notFound != null)
                 {
                     Console.WriteLine(notFound);
@@ -78,7 +78,7 @@ namespace SignalRChatClient
         //Main menu for editing tree
         public void Menu()
         {
-            
+            tree.StartUser();
             //menu choice
             int choice = 0;
 
@@ -90,7 +90,7 @@ namespace SignalRChatClient
                 //make sure choice is a valid menu option
                 if (choice == 1 || choice == 2 || choice == 3 || choice == 4 || choice == 5 || choice == 6)
                 {
-
+                    
                 }
                 else
                 {
@@ -107,11 +107,12 @@ namespace SignalRChatClient
             switch (choice)
             {
                 case 1:
-                    MovingNode();
+                    window.messagesList.Items.Add("Input info like so: parent, value");
+                    //AddNodeByUser();
                     break;
 
                 case 2:
-                    AddNodeByUser();
+                    MovingNode();
                     break;
                 case 3:
                     RemoveNode();
@@ -121,7 +122,8 @@ namespace SignalRChatClient
                     GettingNode();
                     break;
                 case 5:
-                    test.OutputToFile(test.root);
+                    //write out to text or the uwp part
+                    tree.OutputToFile(tree.root);
                     Console.WriteLine("Done");
                     break;
                 case 6:
@@ -136,7 +138,7 @@ namespace SignalRChatClient
         void CreateTreeUser()
         {
             //create intial root node
-            test.StartUser();
+            tree.StartUser();
             //temporary holding variable
             Node tempNode = null;
             string value = "";
@@ -147,7 +149,7 @@ namespace SignalRChatClient
                 Console.WriteLine("Enter node value: ");
                 value = Console.ReadLine();
                 //check if f was entered
-                if (value == "f" || value == "f")
+                if (value == "f" || value == "F")
                 {
                     break;
                 }
@@ -172,7 +174,7 @@ namespace SignalRChatClient
                 //if there is no whitespace, then add as child to root node
                 if (n.WhiteSpace == 0)
                 {
-                    tempNode = test.root;
+                    tempNode = tree.root;
                 }
                 //add node to parent node
                 tempNode.AddNode(n);
@@ -218,7 +220,7 @@ namespace SignalRChatClient
 
             if (id != null)
                 //Display node value
-                Console.WriteLine(test.root.Get(id, getBranch));
+                Console.WriteLine(tree.root.Get(id, getBranch));
         }
 
         //move a node in the tree
@@ -229,24 +231,24 @@ namespace SignalRChatClient
             Console.WriteLine("Enter the value of the object you wish to move:");
             string nodeValue = Console.ReadLine();
             //find the node we want to move
-            Node nodeToMove = test.root.FindNode(FindNodes(nodeValue));
+            Node nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
 
             Console.WriteLine("Enter the value of the object you wish to move the other " +
                 "object to:");
             string parentValue = Console.ReadLine();
-            if (parentValue.Equals(test.root.Content))
+            if (parentValue.Equals(tree.root.Content))
             {
                 //find the object we want to move the value to
-                nodeToMoveTo = test.root;
+                nodeToMoveTo = tree.root;
             }
             else
             {
                 //find the object we want to move the value to
-                nodeToMoveTo = test.root.FindNode(FindNodes(parentValue));
+                nodeToMoveTo = tree.root.FindNode(FindNodes(parentValue));
             }
 
             //pass the id values to the node function
-            test.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
+            tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
         }
 
         //add a node somewhere in the tree
@@ -260,7 +262,12 @@ namespace SignalRChatClient
             string parent = Console.ReadLine();
 
             //get the parent node
-            Node nParent = test.root.FindNode(FindNodes(parent));
+            Node nParent = tree.root.FindNode(FindNodes(parent));
+            if(nParent==null)
+            {
+                nParent = tree.root;
+            }
+
             //create new node
             Node temp = new Node(nParent.WhiteSpace + 8, null, value);
             //add new node as child of the parent node
@@ -275,7 +282,7 @@ namespace SignalRChatClient
             string value = Console.ReadLine();
 
             //remove the node from tree
-            test.root.DeleteNode(FindNodes(value));
+            tree.root.DeleteNode(FindNodes(value));
         }
 
         //Finds a node and returns id value, if there are duplicates it deals with that
@@ -284,7 +291,7 @@ namespace SignalRChatClient
             //temporary node variable
             Node temp = new Node(0, null, value);
             //finds all nodes with the passed in value
-            List<Node> n = test.root.FindNode(temp);
+            List<Node> n = tree.root.FindNode(temp);
             if (n.Count != 0)
             {
                 //if there is more than one object with the same value
