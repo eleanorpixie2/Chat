@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="INode.cs" />
+    <Compile Include="Menus.cs" />
+    <Compile Include="Tree.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,6 +72,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

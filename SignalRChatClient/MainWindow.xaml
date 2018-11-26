@@ -18,6 +18,7 @@
         <TextBox x:Name="userTextBox" HorizontalAlignment="Left" Height="41" Margin="82,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="311" Grid.ColumnSpan="2"/>
         <Label Content="User" HorizontalAlignment="Left" Height="31" Margin="39,63,0,0" VerticalAlignment="Top" Width="38"/>
         <Label Content="Message" HorizontalAlignment="Left" Height="26" Margin="19,120,0,0" VerticalAlignment="Top" Width="58"/>
+        <Button x:Name="echoButton" Content="Echo Message" HorizontalAlignment="Left" Margin="275,170,0,0" VerticalAlignment="Top" Width="95" Click="echoButton_Click" Height="41" Grid.Column="1" IsEnabled="False" RenderTransformOrigin="0.551,2.049"/>
 
     </Grid>
 </Window>
