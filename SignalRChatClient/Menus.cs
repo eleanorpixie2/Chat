@@ -8,8 +8,16 @@ namespace SignalRChatClient
 {
     class Menus
     {
+        MainWindow window;
+
+        public Menus(MainWindow w)
+        {
+            window = w;
+        }
         //tree object
         Tree test = new Tree();
+
+        public string menuMessage= ("Please choose an option: \n1-Move a node\n2-Add a node\n3-Delete a node\n4-Get a node\n5-Write tree to file\n6-Exit");
 
         void StartMenu()
         {
@@ -68,14 +76,13 @@ namespace SignalRChatClient
         }
 
         //Main menu for editing tree
-        public string Menu()
+        public void Menu()
         {
-            //bool that keeps the menu going
-            bool keepGoing = true;
+            
             //menu choice
             int choice = 0;
 
-            string sChoice = Console.ReadLine();
+            string sChoice = window.messageTextBox.Text;
             //convert user input to int
             try
             {
@@ -118,10 +125,9 @@ namespace SignalRChatClient
                     Console.WriteLine("Done");
                     break;
                 case 6:
-                    keepGoing = false;
+                    //keepGoing = false;
                     break;
             }
-            return ("Please choose an option: \n1-Move a node\n2-Add a node\n3-Delete a node\n4-Get a node\n5-Write tree to file\n6-Exit");
 
         }
 

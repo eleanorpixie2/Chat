@@ -9,6 +9,7 @@ namespace SignalRChatClient
     public partial class MainWindow : Window
     {
         HubConnection connection;
+        Menus menu;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +31,7 @@ namespace SignalRChatClient
                 await connection.StartAsync();
             };
             #endregion
+            menu = new Menus(this);
         }
 
         private async void connectButton_Click(object sender, RoutedEventArgs e)
@@ -51,7 +53,8 @@ namespace SignalRChatClient
                 messagesList.Items.Add("Connection started");
                 connectButton.IsEnabled = false;
                 sendButton.IsEnabled = true;
-                echoButton.IsEnabled = true;
+                menuButton.IsEnabled = true;
+                submitButton.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -75,21 +78,27 @@ namespace SignalRChatClient
             }
             #endregion
         }
+    
         private void echoButton_Click(object sender, RoutedEventArgs e)
         {
-            Menus menu = new Menus();
+
             #region snippet_ErrorHandling
             try
             {
                 #region snippet_InvokeAsync
                 #endregion
-                messagesList.Items.Add(menu.Menu());
+                messagesList.Items.Add(menu.menuMessage);
             }
             catch (Exception ex)
             {
                 messagesList.Items.Add(ex.Message);
             }
             #endregion
+        }
+
+        private void submitButton_Click(object sender, RoutedEventArgs e)
+        {
+            menu.Menu();
         }
     }
 }
