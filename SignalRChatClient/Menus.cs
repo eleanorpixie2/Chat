@@ -8,8 +8,25 @@ namespace SignalRChatClient
 {
     class Menus
     {
-        MainWindow window;
+        private enum InputState//this tells us what kind of input we're looking for. We can use it to respond to the input correctly
+        {
+            MainMenu,
+            AddNodeGetInfo,
+            MoveNodeGetValue,
+            MoveNodeGetParent,
+            RemoveNodeGetValue,
+            GetNodeGetValue,
+            GetNodeGetBranchOrNot,
+        }
 
+        private InputState myInputState = InputState.MainMenu;//should always start on the main menu
+  
+        private bool treeCreated = false;//this will make it so everytime the menu is called it doesn't just make a new root.
+        Node nodeToMove;//this I had to make global so that MovingNode could be called more than once and get different input.
+        private bool getBranch = false;//global private bool used in GettingNode();
+        private string getNodeValue;//global private string used in GettingNode();
+
+        MainWindow window;
         public Menus(MainWindow w)
         {
             window = w;
@@ -76,13 +93,58 @@ namespace SignalRChatClient
         }
 
         //Main menu for editing tree
-        public void Menu()
+        public void Menu()//really the key here is that we check each time to see what part of the menu our choice is for...
         {
-            tree.StartUser();
+            if (!treeCreated)
+            {
+                tree.StartUser();
+                treeCreated = true;
+            }
+
+            switch (myInputState)//this tells us what kind of input we got and directs us to the correct handler function for it.
+            {
+                case InputState.MainMenu:
+                    GetMenuChoice();
+                    break;
+                case InputState.AddNodeGetInfo:
+                    AddNodeByUser();
+                    break;
+                case InputState.MoveNodeGetValue:
+                    MovingNode();
+                    window.messagesList.Items.Add("Enter the value of the object you wish to move the other " +
+                    "object to:");//new prompt for next input
+                    break;
+                case InputState.MoveNodeGetParent:
+                    MovingNode();
+                    window.messagesList.Items.Add("Done");
+                    break;
+                case InputState.RemoveNodeGetValue:
+                    RemoveNode();
+                    window.messagesList.Items.Add("Done");
+                    break;
+                case InputState.GetNodeGetValue:
+                    GettingNode();
+                    break;
+                case InputState.GetNodeGetBranchOrNot:
+                    window.messagesList.Items.Add("Do you want the branch with it? Y/N?");
+                    GettingNode();
+                    break;
+
+            }
+
+        }
+
+        private void ResetToMainMenu()
+        {
+            myInputState = InputState.MainMenu;//go back to main menu input if this worked
+        }
+
+        void GetMenuChoice()
+        {
             //menu choice
             int choice = 0;
-
             string sChoice = window.messageTextBox.Text;
+
             //convert user input to int
             try
             {
@@ -90,44 +152,45 @@ namespace SignalRChatClient
                 //make sure choice is a valid menu option
                 if (choice == 1 || choice == 2 || choice == 3 || choice == 4 || choice == 5 || choice == 6)
                 {
-                    
+
                 }
                 else
                 {
-                    Console.WriteLine("Please enter valid menu option");
+                    window.messagesList.Items.Add("Please enter valid menu option");
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Please enter a valid number.");
+                window.messagesList.Items.Add("Please enter a valid number.");
             }
 
-
             //call function based on user choice
-            switch (choice)
+            switch (choice)//these are going to tell the menu what function to call next. Not going to call them directly
             {
-                case 1:
-                    window.messagesList.Items.Add("Input info like so: parent, value");
-                    //AddNodeByUser();
+                case 1://add node               
+                    myInputState = InputState.AddNodeGetInfo;
+                    window.messagesList.Items.Add("Please enter the information in the form of: parent, value");
                     break;
-
-                case 2:
-                    MovingNode();
+                case 2://move node
+                    myInputState = InputState.MoveNodeGetValue;
+                    window.messagesList.Items.Add("Enter the value of the object you wish to move:");
                     break;
-                case 3:
-                    RemoveNode();
-                    Console.WriteLine("Done");
+                case 3://delete a node
+                    //get the value you want to delete
+                    myInputState = InputState.RemoveNodeGetValue;
+                    window.messagesList.Items.Add("Enter vaule you want deleted:");
                     break;
-                case 4:
-                    GettingNode();
+                case 4://get a node
+                    myInputState = InputState.GetNodeGetValue;
+                    window.messagesList.Items.Add("Enter value of Node you want to find: ");
                     break;
-                case 5:
-                    //write out to text or the uwp part
+                case 5://write tree to file
+                       //write out to text or the uwp part
                     tree.OutputToFile(tree.root);
                     Console.WriteLine("Done");
                     break;
-                case 6:
-                    //keepGoing = false;
+                case 6://exit
+                       //keepGoing = false;
                     break;
             }
 
@@ -187,98 +250,127 @@ namespace SignalRChatClient
         //get a node
         void GettingNode()
         {
-            Console.WriteLine("Enter value of Node you want to find: ");
-
-            string nodeValue = Console.ReadLine();
-            bool getBranch = false;
-            //get whether the user just wants the node or the whole branch
-            while (true)
+            if (myInputState == InputState.GetNodeGetValue)
             {
-                Console.WriteLine("Do you want the branch with it? Y/N?");
+                getNodeValue = window.messageTextBox.Text;
+            }
 
-                string getbranch = Console.ReadLine();
+            else if (myInputState == InputState.GetNodeGetBranchOrNot)
+            {
+                //get whether the user just wants the node or the whole branch               
+                string getbranch = window.messageTextBox.Text;
 
                 //set bool based on user input
                 if (getbranch.Equals("Y") || getbranch.Equals("y"))
                 {
                     getBranch = true;
-                    break;
+                    myInputState = InputState.MainMenu;
                 }
                 else if (getbranch.Equals("N") || getbranch.Equals("n"))
                 {
                     getBranch = false;
-                    break;
+                    myInputState = InputState.MainMenu;
                 }
                 else
                 {
-                    Console.WriteLine("Please enter valid option");
-                    continue;
+                    window.messagesList.Items.Add("Please enter valid option");
                 }
             }
 
-            string id = FindNodes(nodeValue);
+            string id = FindNodes(getNodeValue);
 
             if (id != null)
                 //Display node value
-                Console.WriteLine(tree.root.Get(id, getBranch));
+                window.messagesList.Items.Add(tree.root.Get(id, true));
+            else if(getNodeValue.ToLower().Equals("root"))
+            {
+                window.messagesList.Items.Add(tree.root.Get(tree.root.Id, true));
+            }
+
+            ResetToMainMenu();
         }
 
         //move a node in the tree
         void MovingNode()
         {
+            string parentValue;
             Node nodeToMoveTo;
 
-            Console.WriteLine("Enter the value of the object you wish to move:");
-            string nodeValue = Console.ReadLine();
-            //find the node we want to move
-            Node nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
-
-            Console.WriteLine("Enter the value of the object you wish to move the other " +
-                "object to:");
-            string parentValue = Console.ReadLine();
-            if (parentValue.Equals(tree.root.Content))
+            if (myInputState == InputState.MoveNodeGetValue)//if we need to get the value, then it gets value only
             {
-                //find the object we want to move the value to
-                nodeToMoveTo = tree.root;
-            }
-            else
-            {
-                //find the object we want to move the value to
-                nodeToMoveTo = tree.root.FindNode(FindNodes(parentValue));
+                string nodeValue = window.messageTextBox.Text;
+                //find the node we want to move
+                nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
             }
 
-            //pass the id values to the node function
-            tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
+            else if (myInputState == InputState.MoveNodeGetParent)//if it already knows value, we can skip it and get on with doing everything else
+            {
+                parentValue = window.messageTextBox.Text;//this is the last value we need, so we can move the node now
+
+                if (parentValue.Equals(tree.root.Content))
+                {
+                    //find the object we want to move the value to
+                    nodeToMoveTo = tree.root;
+                }
+
+                else
+                {
+                    //find the object we want to move the value to
+                    nodeToMoveTo = tree.root.FindNode(FindNodes(parentValue));
+                }
+
+                //pass the id values to the node function
+                tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
+                
+            }
+
+            ResetToMainMenu();
         }
 
         //add a node somewhere in the tree
         void AddNodeByUser()
         {
-            //get the node the user wants to add
-            Console.WriteLine("Enter value you want to add: ");
-            string value = Console.ReadLine();
-            //get node that the user wants to add a node to
-            Console.WriteLine("Enter parent node value: ");
-            string parent = Console.ReadLine();
+            string parent;//these are local and will be set as soon as our string is parsed and used as params in AddNodeByUser()
+            string value;
+            string sParentandValue = window.messageTextBox.Text;
 
-            //get the parent node
-            Node nParent = tree.root.FindNode(FindNodes(parent));
-            if(nParent==null)
+            try//Try to parse our input and split into 2 strings
             {
-                nParent = tree.root;
+                string[] splitStrings = sParentandValue.Split(',');//split up our 2 strings
+                if (splitStrings.Count() == 2)
+                {
+                    parent = splitStrings[0];//first one is parent
+                    value = splitStrings[1];//second one is value
+
+                    //get the parent node
+                    Node nParent = tree.root.FindNode(FindNodes(parent));
+                    if (nParent == null)
+                    {
+                        nParent = tree.root;
+                    }
+
+                    //create new node
+                    Node temp = new Node(nParent.WhiteSpace + 8, null, value);
+                    //add new node as child of the parent node
+                    nParent.AddNode(temp, nParent.Id);
+
+                    window.messagesList.Items.Add("Your node has been added.");//success message to let user know it worked
+                    
+                }
+                else
+                    window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
+            }
+            catch (Exception e)//if the parse doesn't work, print an error message and repeat the syntax of input required
+            {
+                window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
             }
 
-            //create new node
-            Node temp = new Node(nParent.WhiteSpace + 8, null, value);
-            //add new node as child of the parent node
-            nParent.AddNode(temp, nParent.Id);
+            ResetToMainMenu();
         }
 
         //delete a node from tree
         void RemoveNode()
         {
-            //get the value you want to delete
-            Console.WriteLine("Enter vaule you want deleted:");
             string value = Console.ReadLine();
 
             //remove the node from tree
@@ -300,12 +392,12 @@ namespace SignalRChatClient
                     //write out each object with it's unique id and children
                     foreach (Node node in n)
                     {
-                        Console.WriteLine(node.Id + " " + node.Content);
+                         window.messagesList.Items.Add(node.Id + " " + node.Content);
                         if (node.Children.Count > 0)
                         {
                             foreach (Node child in node.Children)
                             {
-                                Console.WriteLine("\t" + child.Content);
+                                window.messagesList.Items.Add("\t" + child.Content);
                             }
                         }
                     }
@@ -324,7 +416,7 @@ namespace SignalRChatClient
             //if the list is null, then the value couldn't be found;
             else
             {
-                Console.WriteLine("Can't find value");
+                window.messagesList.Items.Add("Can't find value");
                 return null;
             }
             return null;

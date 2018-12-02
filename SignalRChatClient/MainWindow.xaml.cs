@@ -21,7 +21,7 @@ namespace SignalRChatClient
 
                 //http://triquetrachatroom.azurewebsites.net/
                 //http://localhost:5000
-                .WithUrl("http://localhost:5000/chat")
+                .WithUrl("http://triquetrachatroom.azurewebsites.net/chat")
                 .Build();
 
             #region snippet_ClosedRestart
