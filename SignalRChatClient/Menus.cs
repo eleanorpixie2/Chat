@@ -131,6 +131,12 @@ namespace SignalRChatClient
                     break;
 
             }
+
+        }
+
+        private void ResetToMainMenu()
+        {
+            myInputState = InputState.MainMenu;//go back to main menu input if this worked
         }
 
         void GetMenuChoice()
@@ -187,7 +193,6 @@ namespace SignalRChatClient
                        //keepGoing = false;
                     break;
             }
-
 
         }
 
@@ -276,7 +281,13 @@ namespace SignalRChatClient
 
             if (id != null)
                 //Display node value
-                window.messagesList.Items.Add(tree.root.Get(id, getBranch));
+                window.messagesList.Items.Add(tree.root.Get(id, true));
+            else if(getNodeValue.ToLower().Equals("root"))
+            {
+                window.messagesList.Items.Add(tree.root.Get(tree.root.Id, true));
+            }
+
+            ResetToMainMenu();
         }
 
         //move a node in the tree
@@ -310,8 +321,10 @@ namespace SignalRChatClient
 
                 //pass the id values to the node function
                 tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
-                myInputState = InputState.MainMenu;//we are done with this, so we go back to the main menu
+                
             }
+
+            ResetToMainMenu();
         }
 
         //add a node somewhere in the tree
@@ -342,7 +355,7 @@ namespace SignalRChatClient
                     nParent.AddNode(temp, nParent.Id);
 
                     window.messagesList.Items.Add("Your node has been added.");//success message to let user know it worked
-                    myInputState = InputState.MainMenu;//go back to main menu input if this worked
+                    
                 }
                 else
                     window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
@@ -351,6 +364,8 @@ namespace SignalRChatClient
             {
                 window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
             }
+
+            ResetToMainMenu();
         }
 
         //delete a node from tree
