@@ -381,7 +381,7 @@ namespace SignalRChatClient
                     }
 
                     //create new node
-                    Node temp = new Node(nParent.WhiteSpace + 8, null, value);
+                    Node temp = new Node(nParent.WhiteSpace + 1, null, value);
                     //add new node as child of the parent node
                     nParent.AddNode(temp, nParent.Id);
 

@@ -17,7 +17,7 @@ namespace SignalRChatClient
         private List<Node> ToBeAdded = new List<Node>();
 
         //temp node value for finding node by id in node
-        public static Node temp;
+        public Node temp;
 
         private string pathWay;
 

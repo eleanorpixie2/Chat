@@ -100,7 +100,7 @@ namespace SignalRChatClient
         public bool AddNode(Node toAdd)
         {
             //calculate depth of node
-            toAdd.Depth = toAdd.WhiteSpace / 8;
+            toAdd.Depth = toAdd.WhiteSpace / 1;
             //If the depth is less than node comparing to then compare to that node's parent
             if (toAdd.Depth < this.Depth)
             {
@@ -160,6 +160,8 @@ namespace SignalRChatClient
         //find node by unique id
         public Node FindNode(string id)
         {
+            Node parent = this;
+
             //go through whole tree to find specific node
             if (Children.Count > 0)
             {
@@ -174,9 +176,9 @@ namespace SignalRChatClient
                     else
                     {
                         //store equivalent node in variable in the tree class
-                        Tree.temp = child;
+                        parent = child;
                         //return that node
-                        return Tree.temp;
+                        return parent;
                     }
                 }
             }
@@ -185,13 +187,15 @@ namespace SignalRChatClient
             {
                 if (this.Id.Equals(id))
                 {
-                    Tree.temp = this;
-                    return Tree.temp;
+                    //returning root node
+                    parent = this;
+                    return parent;
                 }
 
             }
+
             //return node value
-            return Tree.temp;
+            return parent;
         }
 
         //get node by itself or with branch
@@ -209,7 +213,7 @@ namespace SignalRChatClient
                 //add tabs based on depth
                 for(int i =0; i<found.Depth;i++)
                 {
-                    retrievedNodes += "\t";
+                    retrievedNodes += "  ";
                 }
                 //add node value
                 retrievedNodes += (found.Content);
