@@ -34,6 +34,23 @@ namespace SignalRChatClient
             menu = new Menus(this);
         }
 
+        public async void SendInfo(string message)
+        {
+            #region snippet_ErrorHandling
+            try
+            {
+                #region snippet_InvokeAsync
+                await connection.InvokeAsync("BroadcastMessage",
+                    userTextBox.Text, message);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                messagesList.Items.Add(ex.Message);
+            }
+            #endregion
+        }
+
         private async void connectButton_Click(object sender, RoutedEventArgs e)
         {
             #region snippet_ConnectionOn

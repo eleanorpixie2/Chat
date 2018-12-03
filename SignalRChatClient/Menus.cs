@@ -27,13 +27,17 @@ namespace SignalRChatClient
         private string getNodeValue;//global private string used in GettingNode();
 
         MainWindow window;
+        //tree object
+        Tree tree;
+        UpdateMenus update;
         public Menus(MainWindow w)
         {
+            tree = new Tree();
             window = w;
+            update = new UpdateMenus(window, tree);
         }
-        //tree object
-        Tree tree = new Tree();
-
+       
+        
         public string menuMessage= ("Please choose an option: \n1-Add a node\n2-Move a node\n3-Delete a node\n4-Get a node\n5-Write tree to file\n6-Exit");
 
         void StartMenu()
@@ -92,6 +96,8 @@ namespace SignalRChatClient
             }
         }
 
+        //bool updating = false;
+        int index = 0;
         //Main menu for editing tree
         public void Menu()//really the key here is that we check each time to see what part of the menu our choice is for...
         {
@@ -100,6 +106,25 @@ namespace SignalRChatClient
                 tree.StartUser();
                 treeCreated = true;
             }
+
+            if (window.messagesList.Items.Count > 2)
+            {
+                string input = window.messagesList.Items[window.messagesList.Items.Count - 2].ToString();
+                string name = "";
+                string[] splitStrings = input.Split(':');//split up our 2 strings
+                if (splitStrings.Count() >= 2)
+                {
+                    name = splitStrings[0];
+                    input = splitStrings[1];//first one is parent
+
+                }
+                if (input.Equals(" updating") && name != window.userTextBox.Text && index != window.messagesList.Items.Count)
+                {
+                    index = window.messagesList.Items.Count;
+                    update.Menu(window.messagesList.Items.Count - 1);
+                }
+            }
+
 
             switch (myInputState)//this tells us what kind of input we got and directs us to the correct handler function for it.
             {
@@ -131,13 +156,17 @@ namespace SignalRChatClient
                     break;
 
             }
-
         }
+           
+
+        
 
         private void ResetToMainMenu()
         {
             myInputState = InputState.MainMenu;//go back to main menu input if this worked
         }
+
+        
 
         void GetMenuChoice()
         {
@@ -293,12 +322,13 @@ namespace SignalRChatClient
         //move a node in the tree
         void MovingNode()
         {
-            string parentValue;
+            string parentValue="";
+            string nodeValue = "";
             Node nodeToMoveTo;
 
             if (myInputState == InputState.MoveNodeGetValue)//if we need to get the value, then it gets value only
             {
-                string nodeValue = window.messageTextBox.Text;
+                nodeValue = window.messageTextBox.Text;
                 //find the node we want to move
                 nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
             }
@@ -323,7 +353,8 @@ namespace SignalRChatClient
                 tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
                 
             }
-
+            window.SendInfo("updating");
+            window.SendInfo(2 + "/" + parentValue+","+nodeValue);
             ResetToMainMenu();
         }
 
@@ -364,17 +395,20 @@ namespace SignalRChatClient
             {
                 window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
             }
-
+            window.SendInfo("updating");
+            window.SendInfo(1 + "/" + sParentandValue);
             ResetToMainMenu();
         }
 
         //delete a node from tree
         void RemoveNode()
         {
-            string value = Console.ReadLine();
-
+            string value = window.messageTextBox.Text;
             //remove the node from tree
             tree.root.DeleteNode(FindNodes(value));
+            window.SendInfo("updating");
+            window.SendInfo(3 + "/" + value);
+            ResetToMainMenu();
         }
 
         //Finds a node and returns id value, if there are duplicates it deals with that
