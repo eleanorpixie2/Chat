@@ -126,6 +126,7 @@ namespace SignalRChatClient
         {
             //finds the node to be deleted
             Node toBeDeleted = FindNode(objectId);
+
             //gets the parent of that node
             Node parent = toBeDeleted.Parent;
 
@@ -170,7 +171,7 @@ namespace SignalRChatClient
                     if (!child.Id.Equals(id))
                     {
                         //if it does not equal then check that node and it's children
-                        child.FindNode(id);
+                        parent = child.FindNode(id);
                         
                     }
                     else
@@ -213,7 +214,7 @@ namespace SignalRChatClient
                 //add tabs based on depth
                 for(int i =0; i<found.Depth;i++)
                 {
-                    retrievedNodes += "  ";
+                    retrievedNodes += " ";
                 }
                 //add node value
                 retrievedNodes += (found.Content);
