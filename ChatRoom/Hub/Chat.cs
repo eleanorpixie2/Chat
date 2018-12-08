@@ -28,12 +28,12 @@ namespace Microsoft.Azure.SignalR.Samples.ChatRoom
 
         public void PingUsers(string source)
         {
-            Clients.Others.SendAsync("returnTimeStamp", source);
+            Clients.Others.SendAsync("pingUsers", source);
         }
 
         public void ReturnTimeStamp(string source, DateTime time)
         {
-            Clients.Client(source).SendAsync("broadcastMessage", time);
+            Clients.Client(source).SendAsync("broadcastMessage", " ", time.ToString());
         }
     }
 }

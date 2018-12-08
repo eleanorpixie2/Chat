@@ -63,10 +63,18 @@ namespace SignalRChatClient
                 });
             });
 
-            connection.On<string, DateTime>("returnTimeStamp", (source, time) =>
+            connection.On<string>("pingUsers", (source) =>
             {
-                time = menu.tree.currentTime;
+                this.Dispatcher.Invoke(() =>
+                {
+                    connection.InvokeAsync("returnTimeStamp", source);
+                });
             });
+
+            //connection.On<string, DateTime>("returnTimeStamp", (source, time) =>
+            //{
+            //    time = menu.tree.currentTime;
+            //});
             #endregion
 
             try
