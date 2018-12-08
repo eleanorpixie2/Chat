@@ -62,6 +62,11 @@ namespace SignalRChatClient
                    messagesList.Items.Add(newMessage);
                 });
             });
+
+            connection.On<string, DateTime>("returnTimeStamp", (source, time) =>
+            {
+                time = menu.tree.currentTime;
+            });
             #endregion
 
             try

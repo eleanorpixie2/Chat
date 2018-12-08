@@ -28,7 +28,7 @@ namespace SignalRChatClient
 
         MainWindow window;
         //tree object
-        Tree tree;
+        public Tree tree;
         UpdateMenus update;
         public Menus(MainWindow w)
         {
@@ -124,6 +124,8 @@ namespace SignalRChatClient
                     update.Menu(window.messagesList.Items.Count - 1);
                 }
             }
+
+            tree.currentTime = DateTime.UtcNow;//overrwrite the current time every time it gets updated
 
 
             switch (myInputState)//this tells us what kind of input we got and directs us to the correct handler function for it.

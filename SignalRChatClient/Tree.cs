@@ -19,6 +19,8 @@ namespace SignalRChatClient
         //temp node value for finding node by id in node
         public Node temp;
 
+        public DateTime currentTime;
+
         private string pathWay;
 
         //starting function with file input
@@ -40,6 +42,7 @@ namespace SignalRChatClient
         {
             root = new Node(0, null, null);
             root.Depth = -1;
+            currentTime = DateTime.UtcNow;
         }
 
         //load content from a file
