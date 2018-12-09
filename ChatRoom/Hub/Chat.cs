@@ -20,18 +20,18 @@ namespace Microsoft.Azure.SignalR.Samples.ChatRoom
             Clients.Client(Context.ConnectionId).SendAsync("echo", name, message + " (echo from server)");
         }
 
-        public override Task OnConnectedAsync()
+        public override Task OnConnectedAsync()//first
         {
-            Clients.Others.SendAsync("pingUsers", Context.ConnectionId);
+            Clients.Others.SendAsync("pingUsers", Context.ConnectionId);           
             return base.OnConnectedAsync();
         }
 
-        public void PingUsers(string source)
-        {
+        public void PingUsers(string source)//second
+        { 
             Clients.Others.SendAsync("pingUsers", source);
         }
 
-        public void ReturnTimeStamp(string source, DateTime time)
+        public void ReturnTimeStamp(string source, DateTime time)//last
         {
             Clients.Client(source).SendAsync("broadcastMessage", " ", time.ToString());
         }

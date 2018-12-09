@@ -54,27 +54,31 @@ namespace SignalRChatClient
         private async void connectButton_Click(object sender, RoutedEventArgs e)
         {
             #region snippet_ConnectionOn
+            
+            connection.On<string>("PingUsers", (source) =>//this part gets called on connect
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    connection.InvokeAsync("ReturnTimeStamp", source, menu.tree.currentTime);//this part doesn't get called
+                    messagesList.Items.Add("trying to call Ping Users");
+                });
+            });
+        
             connection.On<string, string>("broadcastMessage", (user, message) =>
             {
                 this.Dispatcher.Invoke(() =>
                 {
-                   var newMessage = $"{user}: {message}";
-                   messagesList.Items.Add(newMessage);
+                   var newMessage = $"{user}: {message}";//this part gets called when you click send
+                   messagesList.Items.Add(newMessage);//the reason this part gets called is because of line 105
                 });
             });
 
-            connection.On<string>("pingUsers", (source) =>
+            connection.On<string, DateTime>("returnTimeStamp", (source, time) =>//this part gets called on connect
             {
-                this.Dispatcher.Invoke(() =>
-                {
-                    connection.InvokeAsync("returnTimeStamp", source);
-                });
+                messagesList.Items.Add("Trying to call return timestamp");//this part never gets called. I think it needs to be invoked from here but I have no idea how to pass in the params.
+                time = menu.tree.currentTime;
             });
 
-            //connection.On<string, DateTime>("returnTimeStamp", (source, time) =>
-            //{
-            //    time = menu.tree.currentTime;
-            //});
             #endregion
 
             try
@@ -98,7 +102,7 @@ namespace SignalRChatClient
             try
             {
                 #region snippet_InvokeAsync
-                await connection.InvokeAsync("BroadcastMessage", 
+                await connection.InvokeAsync("BroadcastMessage", //this is where the code in connection.on is called
                     userTextBox.Text, messageTextBox.Text);
                 #endregion
             }
