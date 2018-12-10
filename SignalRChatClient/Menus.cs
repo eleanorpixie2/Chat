@@ -35,6 +35,7 @@ namespace SignalRChatClient
             tree = new Tree();
             window = w;
             update = new UpdateMenus(window, tree);
+            StartTree();
         }
        
         
@@ -97,33 +98,11 @@ namespace SignalRChatClient
         }
 
         //bool updating = false;
-        int index = 0;
+        int index = 1;
         //Main menu for editing tree
         public void Menu()//really the key here is that we check each time to see what part of the menu our choice is for...
         {
-            if (!treeCreated)
-            {
-                tree.StartUser();
-                treeCreated = true;
-            }
-
-            if (window.messagesList.Items.Count > 2)
-            {
-                string input = window.messagesList.Items[window.messagesList.Items.Count - 2].ToString();
-                string name = "";
-                string[] splitStrings = input.Split(':');//split up our 2 strings
-                if (splitStrings.Count() >= 2)
-                {
-                    name = splitStrings[0];
-                    input = splitStrings[1];//first one is parent
-
-                }
-                if (input.Equals(" updating") && name != window.userTextBox.Text && index != window.messagesList.Items.Count)
-                {
-                    index = window.messagesList.Items.Count;
-                    update.Menu(window.messagesList.Items.Count - 1);
-                }
-            }
+            //CheckForUpdateFromOtherUser();
 
             tree.currentTime = DateTime.UtcNow;//overrwrite the current time every time it gets updated
 
@@ -159,9 +138,44 @@ namespace SignalRChatClient
 
             }
         }
-           
 
-        
+        private void StartTree()
+        {
+            if (!treeCreated)
+            {
+                tree.StartUser();
+                treeCreated = true;
+            }
+        }
+
+        public void CheckForUpdateFromOtherUser()
+        {
+            if (window.messagesList.Items.Count > 1)
+            {
+                for (int i = index; i < window.messagesList.Items.Count; i++)
+                {
+                    string input = window.messagesList.Items[i].ToString();
+                    string name = "";
+                    string keyword = "";
+                    string[] splitStrings = input.Split(':','*');//split up our 2 strings
+                    if (splitStrings.Count() > 2)
+                    {
+                        name = splitStrings[0];
+                        keyword= splitStrings[1];
+                        input = splitStrings[2];//first one is parent
+
+                    }
+                    if (keyword.Equals(" updating") && name != window.userTextBox.Text && index != window.messagesList.Items.Count)
+                    {
+                        update.Menu(input);
+                    }
+                }
+                index = window.messagesList.Items.Count;
+            }
+
+        }
+
+
 
         private void ResetToMainMenu()
         {
@@ -355,8 +369,7 @@ namespace SignalRChatClient
                 tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
                 
             }
-            window.SendInfo("updating");
-            window.SendInfo(2 + "/" + parentValue+","+nodeValue);
+            window.SendInfo("updating/"+2 + "/" + parentValue+","+nodeValue);
             ResetToMainMenu();
         }
 
@@ -397,8 +410,7 @@ namespace SignalRChatClient
             {
                 window.messagesList.Items.Add("Incorrect syntax. Please enter the information in the form of: parent, value");
             }
-            window.SendInfo("updating");
-            window.SendInfo(1 + "/" + sParentandValue);
+            window.SendInfo("updating*"+1 + "/" + sParentandValue);
             ResetToMainMenu();
         }
 
@@ -408,8 +420,7 @@ namespace SignalRChatClient
             string value = window.messageTextBox.Text;
             //remove the node from tree
             tree.root.DeleteNode(FindNodes(value));
-            window.SendInfo("updating");
-            window.SendInfo(3 + "/" + value);
+            window.SendInfo("updating/" + 3 + "/" + value);
             ResetToMainMenu();
         }
 
