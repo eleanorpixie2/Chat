@@ -300,27 +300,27 @@ namespace SignalRChatClient
                 getNodeValue = window.messageTextBox.Text;
             }
 
-            else if (myInputState == InputState.GetNodeGetBranchOrNot)
-            {
-                //get whether the user just wants the node or the whole branch               
-                string getbranch = window.messageTextBox.Text;
+            //else if (myInputState == InputState.GetNodeGetBranchOrNot)
+            //{
+            //    //get whether the user just wants the node or the whole branch               
+            //    string getbranch = window.messageTextBox.Text;
 
-                //set bool based on user input
-                if (getbranch.Equals("Y") || getbranch.Equals("y"))
-                {
-                    getBranch = true;
-                    myInputState = InputState.MainMenu;
-                }
-                else if (getbranch.Equals("N") || getbranch.Equals("n"))
-                {
-                    getBranch = false;
-                    myInputState = InputState.MainMenu;
-                }
-                else
-                {
-                    window.messagesList.Items.Add("Please enter valid option");
-                }
-            }
+            //    //set bool based on user input
+            //    if (getbranch.Equals("Y") || getbranch.Equals("y"))
+            //    {
+            //        getBranch = true;
+            //        myInputState = InputState.MainMenu;
+            //    }
+            //    else if (getbranch.Equals("N") || getbranch.Equals("n"))
+            //    {
+            //        getBranch = false;
+            //        myInputState = InputState.MainMenu;
+            //    }
+            //    else
+            //    {
+            //        window.messagesList.Items.Add("Please enter valid option");
+            //    }
+            //}
 
             string id = FindNodes(getNodeValue);
 

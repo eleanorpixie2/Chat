@@ -162,6 +162,10 @@ namespace SignalRChatClient
         public Node FindNode(string id)
         {
             Node parent = this;
+            if (id == null)
+            {
+                return parent;
+            }
 
             //go through whole tree to find specific node
             if (Children.Count > 0)
@@ -171,7 +175,7 @@ namespace SignalRChatClient
                     if (!child.Id.Equals(id))
                     {
                         //if it does not equal then check that node and it's children
-                        parent = child.FindNode(id);
+                        child.FindNode(id);
                         
                     }
                     else
@@ -214,7 +218,7 @@ namespace SignalRChatClient
                 //add tabs based on depth
                 for(int i =0; i<found.Depth;i++)
                 {
-                    retrievedNodes += " ";
+                    retrievedNodes += "-";
                 }
                 //add node value
                 retrievedNodes += (found.Content);
