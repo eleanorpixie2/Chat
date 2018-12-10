@@ -335,11 +335,11 @@ namespace SignalRChatClient
             ResetToMainMenu();
         }
 
+        string parentValue = "";
+        string nodeValue = "";
         //move a node in the tree
         void MovingNode()
         {
-            string parentValue="";
-            string nodeValue = "";
             Node nodeToMoveTo;
 
             if (myInputState == InputState.MoveNodeGetValue)//if we need to get the value, then it gets value only
@@ -347,6 +347,7 @@ namespace SignalRChatClient
                 nodeValue = window.messageTextBox.Text;
                 //find the node we want to move
                 nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
+                myInputState = InputState.MoveNodeGetParent;
             }
 
             else if (myInputState == InputState.MoveNodeGetParent)//if it already knows value, we can skip it and get on with doing everything else
@@ -368,9 +369,9 @@ namespace SignalRChatClient
                 //pass the id values to the node function
                 tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
                 
+                window.SendInfo("updating*"+2 + "/" + parentValue+","+nodeValue);
+                ResetToMainMenu();
             }
-            window.SendInfo("updating*"+2 + "/" + parentValue+","+nodeValue);
-            ResetToMainMenu();
         }
 
         //add a node somewhere in the tree
