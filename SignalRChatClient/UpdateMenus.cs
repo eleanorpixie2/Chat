@@ -45,14 +45,14 @@ namespace SignalRChatClient
         int menu;
 
         //Main menu for editing tree
-        public void Menu(int index)//really the key here is that we check each time to see what part of the menu our choice is for...
+        public void Menu(string index)//really the key here is that we check each time to see what part of the menu our choice is for...
         {
-            message = window.messagesList.Items[index].ToString();
-            string[] splitStrings = message.Split('/',':');//split up our 2 strings
+            message = index;
+            string[] splitStrings = message.Split('/');//split up our 2 strings
             if (splitStrings.Count() >= 2)
             {
-                sMenu = splitStrings[1];//first one is parent
-                value = splitStrings[2];//second one is value
+                sMenu = splitStrings[0];//first one is parent
+                value = splitStrings[1];//second one is value
 
             }
             try

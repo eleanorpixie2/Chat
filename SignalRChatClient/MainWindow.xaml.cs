@@ -33,7 +33,11 @@ namespace SignalRChatClient
             #endregion
             menu = new Menus(this);
         }
-
+        private void RunAsync()
+        {
+            //await Task.Delay(new Random().Next(0, 5) * 1000);
+            menu.CheckForUpdateFromOtherUser();
+        }
         public async void SendInfo(string message)
         {
             #region snippet_ErrorHandling
@@ -68,8 +72,9 @@ namespace SignalRChatClient
             {
                 this.Dispatcher.Invoke(() =>
                 {
-                   var newMessage = $"{user}: {message}";//this part gets called when you click send
+                    var newMessage = $"{user}: {message}";//this part gets called when you click send
                    messagesList.Items.Add(newMessage);//the reason this part gets called is because of line 105
+                    RunAsync();
                 });
             });
 
