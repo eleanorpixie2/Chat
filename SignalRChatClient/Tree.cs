@@ -26,7 +26,7 @@ namespace SignalRChatClient
         //starting function with file input
         public string Start(string path)
         {
-            root = new Node(0, null, null);
+            root = new Node(0, null, null,this);
             root.Depth = -1;
             pathWay = path;
             bool foundFile=LoadContent();
@@ -40,7 +40,7 @@ namespace SignalRChatClient
         //starting function for user input
         public void StartUser()
         {
-            root = new Node(0, null, null);
+            root = new Node(0, null, null,this);
             root.Depth = -1;
             currentTime = DateTime.UtcNow;
         }
@@ -129,7 +129,7 @@ namespace SignalRChatClient
         private void AddNodeToList(int count, List<Node> toBeAdded, string line)
         {
             //create new node and add it to list
-            ToBeAdded.Add(new Node(count, null, line));
+            ToBeAdded.Add(new Node(count, null, line,this));
         }
 
         //add all nodes of the same depth to tree

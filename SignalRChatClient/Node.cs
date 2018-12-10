@@ -79,12 +79,15 @@ namespace SignalRChatClient
         private int _wspace;
         #endregion
 
+        public Tree t_temp;
+
         //constructor for node, sets whitespace, unique id, and node value
-        public Node(int _whitespace, string _id, string _content)
+        public Node(int _whitespace, string _id, string _content, Tree t)
         {
             WhiteSpace = _whitespace;
             Id = _id;
             Content = _content;
+            t_temp=t;
         }
 
         //add a node to a set parent
@@ -100,7 +103,7 @@ namespace SignalRChatClient
         public bool AddNode(Node toAdd)
         {
             //calculate depth of node
-            toAdd.Depth = toAdd.WhiteSpace / 1;
+            toAdd.Depth = toAdd.WhiteSpace;
             //If the depth is less than node comparing to then compare to that node's parent
             if (toAdd.Depth < this.Depth)
             {
@@ -161,12 +164,6 @@ namespace SignalRChatClient
         //find node by unique id
         public Node FindNode(string id)
         {
-            Node parent = this;
-            if (id == null)
-            {
-                return parent;
-            }
-
             //go through whole tree to find specific node
             if (Children.Count > 0)
             {
@@ -175,15 +172,15 @@ namespace SignalRChatClient
                     if (!child.Id.Equals(id))
                     {
                         //if it does not equal then check that node and it's children
-                        child.FindNode(id);
+                         child.FindNode(id);
                         
                     }
                     else
                     {
                         //store equivalent node in variable in the tree class
-                        parent = child;
+                        t_temp.temp= child;
                         //return that node
-                        return parent;
+                        return t_temp.temp;
                     }
                 }
             }
@@ -193,14 +190,14 @@ namespace SignalRChatClient
                 if (this.Id.Equals(id))
                 {
                     //returning root node
-                    parent = this;
-                    return parent;
+                    t_temp.temp = this;
+                    return t_temp.temp;
                 }
 
             }
 
             //return node value
-            return parent;
+            return t_temp.temp;
         }
 
         //get node by itself or with branch
@@ -213,6 +210,7 @@ namespace SignalRChatClient
             {
                 //finds the node based on unique id
                 Node found = FindNode(id);
+
                 //add a new line
                 retrievedNodes += "\n";
                 //add tabs based on depth

@@ -278,7 +278,7 @@ namespace SignalRChatClient
                     }
                 }
                 //make new node
-                Node n = new Node(8 * depth, null, value);
+                Node n = new Node(8 * depth, null, value, tree);
                 //if there is no whitespace, then add as child to root node
                 if (n.WhiteSpace == 0)
                 {
@@ -369,7 +369,7 @@ namespace SignalRChatClient
                 tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
                 
             }
-            window.SendInfo("updating/"+2 + "/" + parentValue+","+nodeValue);
+            window.SendInfo("updating*"+2 + "/" + parentValue+","+nodeValue);
             ResetToMainMenu();
         }
 
@@ -396,7 +396,7 @@ namespace SignalRChatClient
                     }
 
                     //create new node
-                    Node temp = new Node(nParent.WhiteSpace + 1, null, value);
+                    Node temp = new Node(nParent.WhiteSpace + 1, null, value, tree);
                     //add new node as child of the parent node
                     nParent.AddNode(temp, nParent.Id);
 
@@ -420,7 +420,7 @@ namespace SignalRChatClient
             string value = window.messageTextBox.Text;
             //remove the node from tree
             tree.root.DeleteNode(FindNodes(value));
-            window.SendInfo("updating/" + 3 + "/" + value);
+            window.SendInfo("updating*" + 3 + "/" + value);
             ResetToMainMenu();
         }
 
@@ -428,7 +428,7 @@ namespace SignalRChatClient
         string FindNodes(string value)
         {
             //temporary node variable
-            Node temp = new Node(0, null, value);
+            Node temp = new Node(0, null, value,tree);
             //finds all nodes with the passed in value
             List<Node> n = tree.root.FindNode(temp);
             if (n.Count != 0)

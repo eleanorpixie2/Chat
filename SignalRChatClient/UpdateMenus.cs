@@ -238,7 +238,7 @@ namespace SignalRChatClient
                     }
 
                     //create new node
-                    Node temp = new Node(nParent.WhiteSpace + 1, null, nodeValue);
+                    Node temp = new Node(nParent.WhiteSpace + 1, null, nodeValue,tree);
                     //add new node as child of the parent node
                     nParent.AddNode(temp, nParent.Id);
 
@@ -266,7 +266,7 @@ namespace SignalRChatClient
         string FindNodes(string nodeValue)
         {
             //temporary node variable
-            Node temp = new Node(0, null, nodeValue);
+            Node temp = new Node(0, null, nodeValue,tree);
             //finds all nodes with the passed in value
             List<Node> n = tree.root.FindNode(temp);
             if (n.Count != 0)
