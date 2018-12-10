@@ -186,33 +186,24 @@ namespace SignalRChatClient
 
             }
 
-            if (myInputState == InputState.MoveNodeGetValue)//if we need to get the value, then it gets value only
+            //find the node we want to move
+            nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
+
+            if (parentValue.Equals(tree.root.Content))
             {
-                //find the node we want to move
-                nodeToMove = tree.root.FindNode(FindNodes(nodeValue));
+                //find the object we want to move the value to
+                nodeToMoveTo = tree.root;
+            }
+            else
+            {
+                //find the object we want to move the value to
+                nodeToMoveTo = tree.root.FindNode(FindNodes(parentValue));
             }
 
-            else if (myInputState == InputState.MoveNodeGetParent)//if it already knows value, we can skip it and get on with doing everything else
-            {
-
-                if (parentValue.Equals(tree.root.Content))
-                {
-                    //find the object we want to move the value to
-                    nodeToMoveTo = tree.root;
-                }
-
-                else
-                {
-                    //find the object we want to move the value to
-                    nodeToMoveTo = tree.root.FindNode(FindNodes(parentValue));
-                }
-
-                //pass the id values to the node function
-                tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
+            //pass the id values to the node function
+            tree.root.MoveNode(nodeToMove.Id, nodeToMoveTo.Id);
                 
-            }
 
-            ResetToMainMenu();
         }
 
         //add a node somewhere in the tree
